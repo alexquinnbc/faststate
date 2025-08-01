@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAST STATE - Adaptive Intelligence Trainer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(12px);
+    }
+    button {
+      background: #00c6ff;
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.2rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background: #00b0e5;
+    }
+    .timer {
+      font-size: 2rem;
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .challenge, .result {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>FAST STATE</h1>
+    <div class="glass" id="phase1">
+      <h2>1. PRIME</h2>
+      <p>Take 3 deep breaths. Splash water on your face or imagine cold air hitting your neck.</p>
+      <button onclick="startChallenge()">Start Challenge</button>
+    </div>
+
+    <div class="glass hidden" id="phase2">
+      <h2>2. MICRO-CHALLENGE</h2>
+      <p class="challenge" id="challengeText"></p>
+      <div class="timer" id="timer">00:15</div>
+      <button onclick="completeChallenge()">Done</button>
+    </div>
+
+    <div class="glass hidden" id="phase3">
+      <h2>3. FEEDBACK</h2>
+      <p class="result" id="resultText">You finished in <span id="timeTaken"></span> seconds.</p>
+      <p>Ask yourself: What did I learn? What would I change?</p>
+      <button onclick="startReset()">Reset Phase</button>
+    </div>
+
+    <div class="glass hidden" id="phase4">
+      <h2>4. RESET</h2>
+      <p>Breathe slowly. Replay the moment mentally. Let your nervous system integrate the learning.</p>
+      <button onclick="restart()">Train Again</button>
+    </div>
+  </div>
+
+  <script>
+    const phase1 = document.getElementById("phase1");
+    const phase2 = document.getElementById("phase2");
+    const phase3 = document.getElementById("phase3");
+    const phase4 = document.getElementById("phase4");
+    const challengeText = document.getElementById("challengeText");
+    const timerEl = document.getElementById("timer");
+    const resultText = document.getElementById("timeTaken");
+
+    const challenges = [
+      "Write a 1-line solution to a common problem in your industry.",
+      "Describe how you'd escape a locked room using only a chair and a mirror.",
+      "Draft a tweet that teaches something useful in under 15 words.",
+      "Name 3 product ideas you could build in 1 hour, starting now.",
+      "You're falling. Think fast. What do you grab?",
+      "You just lost all files. What do you do next?"
+    ];
+
+    let startTime, interval;
+
+    function startChallenge() {
+      phase1.classList.add("hidden");
+      phase2.classList.remove("hidden");
+      const challenge = challenges[Math.floor(Math.random() * challenges.length)];
+      challengeText.innerText = challenge;
+      startTime = Date.now();
+      startTimer(15);
+    }
+
+    function startTimer(seconds) {
+      let remaining = seconds;
+      timerEl.innerText = `00:${String(remaining).padStart(2, '0')}`;
+      interval = setInterval(() => {
+        remaining--;
+        timerEl.innerText = `00:${String(remaining).padStart(2, '0')}`;
+        if (remaining <= 0) {
+          clearInterval(interval);
+          completeChallenge(true);
+        }
+      }, 1000);
+    }
+
+    function completeChallenge(auto = false) {
+      clearInterval(interval);
+      const endTime = Date.now();
+      const secondsTaken = ((endTime - startTime) / 1000).toFixed(1);
+      phase2.classList.add("hidden");
+      phase3.classList.remove("hidden");
+      resultText.innerText = auto ? "time limit (15.0)" : secondsTaken;
+    }
+
+    function startReset() {
+      phase3.classList.add("hidden");
+      phase4.classList.remove("hidden");
+    }
+
+    function restart() {
+      phase4.classList.add("hidden");
+      phase1.classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
